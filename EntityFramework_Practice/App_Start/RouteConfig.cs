@@ -16,7 +16,7 @@ namespace EntityFramework_Practice
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "User", action = "UserForm", id = UrlParameter.Optional }
             );
         }
     }

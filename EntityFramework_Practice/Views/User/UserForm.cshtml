@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "UserForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Form</h2>
+<table>
+    <tr>
+        <td>Name: </td>
+        <td><input type="text" id="Name_txt" /></td>
+    </tr>
+
+    <tr>
+        <td>Email: </td>
+        <td><input type="text" id="Email_txt" /></td>
+    </tr>
+
+    <tr>
+        <td>Age: </td>
+        <td><input type="text" id="Age_txt" /></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="button" id="Save_btn" value="Save" onclick="INSERT()" /></td>
+    </tr>
+</table>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    function INSERT() {
+        $.ajax({
+            url: 'User/InsertUser',
+            type: 'post',
+            data: {
+                Name: $("#Name_txt").val(),
+                Email: $("#Email_txt").val(),
+                Age: $("#Age_txt").val()
+            },
+            success: function () {
+                alert('Data has been saved successfully!');
+            },
+            error: function () {
+                alert('Data hasn\'t been saved successfully!');
+            }
+        });
+    }
+</script>
+
