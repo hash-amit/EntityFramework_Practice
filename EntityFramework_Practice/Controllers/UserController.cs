@@ -41,5 +41,11 @@ namespace EntityFramework_Practice.Controllers
             var data = dbEntities.GetOneUser(user.User_ID).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public void DeleteUser(tblUser user)
+        {
+            dbEntities.DeleteUser(user.User_ID);
+            dbEntities.SaveChanges();
+        }
     }
 }

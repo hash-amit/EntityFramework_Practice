@@ -112,7 +112,7 @@
                             <td>${data[i].Name}</td>
                             <td>${data[i].Email}</td>
                             <td>${data[i].Age}</td>
-                            <td><a href="javascript:PopulateUser('${ data[i].User_ID }')">Edit</a> | <a href="#">Delete</a></td>
+                            <td><a href="javascript:PopulateUser('${ data[i].User_ID}')">Edit</a> | <a href="javascript:DeleteUser('${data[i].User_ID }')">Delete</a></td>
                         </tr>
                     `);
                 }
@@ -139,6 +139,22 @@
                 alert('Something went wrong!');
             }
         });
+    }
+
+    function DeleteUser(userid) {
+        if (confirm("If you click on 'OK' it will be deleted permanently!")) {
+            $.ajax({
+                url: 'User/DeleteUser',
+                type: 'post',
+                data: { User_ID: userid },
+                success: function () {
+                    DISPLAY();
+                },
+                error: function () {
+                    alert('Something went wrong!');
+                }
+            });
+        }
     }
 
 </script>
