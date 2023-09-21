@@ -68,17 +68,28 @@
         DISPLAY();
     });
 
+    let uid;
+
+    function ClearForm() {
+        uid = 0;
+        $("#Name_txt").val(""),
+        $("#Email_txt").val(""),
+        $("#Age_txt").val("")
+    }
+
     function INSERT() {
         $.ajax({
-            url: 'User/InsertUser',
+            url: 'User/InsertUpdateUser',
             type: 'post',
             data: {
+                User_ID: uid,
                 Name: $("#Name_txt").val(),
                 Email: $("#Email_txt").val(),
                 Age: $("#Age_txt").val()
             },
             success: function () {
                 alert('Data has been saved successfully!');
+                ClearForm();
                 DISPLAY();
             },
             error: function () {
@@ -100,7 +111,7 @@
                             <td>${data[i].Name}</td>
                             <td>${data[i].Email}</td>
                             <td>${data[i].Age}</td>
-                            <td><a href="#">Edit</a> | <a href="#">Delete</a></td>
+                            <td><a href="javascript:PopulateUser('${ data[i].User_ID }')">Edit</a> | <a href="#">Delete</a></td>
                         </tr>
                     `);
                 }
@@ -110,5 +121,24 @@
             }
         });
     }
+
+    function PopulateUser(userid) {
+        $.ajax({
+            url: 'User/GetOneUser',
+            type: 'post',
+            data: { User_ID: userid },
+            success: function (data) {
+                $("#Name_txt").val(data[0].Name);
+                $("#Email_txt").val(data[0].Email);
+                $("#Age_txt").val(data[0].Age);
+                $("#Save_btn").val("Update");
+                uid = data[0].User_ID;
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    }
+
 </script>
 
