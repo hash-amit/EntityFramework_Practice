@@ -25,9 +25,49 @@
         <td><input type="button" id="Save_btn" value="Save" onclick="INSERT()" /></td>
     </tr>
 </table>
+<br />
+<table id="Display_tbl">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th id="Action_col">Actions</th>
+    </tr>
+</table>
+
+<style>
+    #Display_tbl{
+        border: 1px solid black;
+        width: 100%;
+    }
+
+    #Display_tbl tr th {
+        border: 1px solid black;
+        background-color: brown;
+        color: white;
+        text-align: center;
+    }
+
+    #Action_col{
+        width: 200px;
+    }
+
+    #Display_tbl tr td {
+        border: 1px solid black;
+        text-align: center
+    }
+
+    #Display_tbl tr td input {
+        width: 50%;
+    }
+</style>
 
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        DISPLAY();
+    });
+
     function INSERT() {
         $.ajax({
             url: 'User/InsertUser',
@@ -39,9 +79,34 @@
             },
             success: function () {
                 alert('Data has been saved successfully!');
+                DISPLAY();
             },
             error: function () {
                 alert('Data hasn\'t been saved successfully!');
+            }
+        });
+    }
+
+    function DISPLAY() {
+        $.ajax({
+            url: 'User/GetAllUser',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                $("#Display_tbl").find("tr:gt(0)").remove();
+                for (var i = 0; i < data.length; i++) {
+                    $("#Display_tbl").append(`
+                        <tr>
+                            <td>${data[i].Name}</td>
+                            <td>${data[i].Email}</td>
+                            <td>${data[i].Age}</td>
+                            <td><a href="#">Edit</a> | <a href="#">Delete</a></td>
+                        </tr>
+                    `);
+                }
+            },
+            error: function () {
+                alert('Data not found!');
             }
         });
     }

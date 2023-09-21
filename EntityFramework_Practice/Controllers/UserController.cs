@@ -21,5 +21,11 @@ namespace EntityFramework_Practice.Controllers
             dbEntities.InsertUser(user.Name, user.Email, user.Age);
             dbEntities.SaveChanges();
         }
+
+        public JsonResult GetAllUser()
+        {
+            var data = dbEntities.GetAllUser().ToList();
+            return Json(data,JsonRequestBehavior.AllowGet);
+        }
     }
 }
