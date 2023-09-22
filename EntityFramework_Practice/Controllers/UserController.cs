@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace EntityFramework_Practice.Controllers
 {
@@ -30,7 +31,10 @@ namespace EntityFramework_Practice.Controllers
             }
             else
             {
-                dbEntities.UpdateUser(user.User_ID, user.Name, user.Email, user.Age);
+                dbEntities.Entry(user).State = EntityState.Modified;
+                
+                // using custom method (stored proc) to update any record
+                // dbEntities.UpdateUser(user.User_ID, user.Name, user.Email, user.Age);
                 dbEntities.SaveChanges();
             }
         }
