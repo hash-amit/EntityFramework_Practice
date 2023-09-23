@@ -2,6 +2,7 @@ CREATE DATABASE dbDatabase
 USE dbDatabase
 
 drop table tblUser
+truncate table tblUser
 
 CREATE TABLE tblUser
 (
@@ -10,6 +11,13 @@ CREATE TABLE tblUser
 	[Email] VARCHAR(30) UNIQUE NOT NULL,
 	[Age] INT NOT NULL
 )
+
+ALTER TABLE tblUser
+ADD Country INT NOT NULL,
+State INT NOT NULL
+
+SELECT * FROM tblUser
+
  -- Inserting
 CREATE PROC InsertUser
 (
@@ -68,3 +76,35 @@ BEGIN
 	WHERE [User_ID] = @user_id
 END;
 
+CREATE TABLE tblCountry
+(
+	CountryID  INT PRIMARY KEY IDENTITY,
+	CountryName VARCHAR(30),
+)
+
+INSERT INTO tblCountry(CountryName)
+VALUES('India'),('United States'),('Pakistan')
+
+SELECT * FROM tblCountry
+
+CREATE TABLE tblState
+(
+	StateID  INT PRIMARY KEY IDENTITY,
+	StateName VARCHAR(30),
+	CountryID INT,
+	FOREIGN KEY (CountryID) REFERENCES tblCountry(CountryID)
+)
+
+SELECT * FROM tblState
+
+INSERT INTO tblState(StateName,CountryID) VALUES('Delhi',1)
+INSERT INTO tblState(StateName,CountryID) VALUES('Haryana',1)
+INSERT INTO tblState(StateName,CountryID) VALUES('Karnataka',1)
+
+INSERT INTO tblState(StateName,CountryID) VALUES('Texas',2)
+INSERT INTO tblState(StateName,CountryID) VALUES('California',2)
+INSERT INTO tblState(StateName,CountryID) VALUES('Florida',2)
+
+INSERT INTO tblState(StateName,CountryID) VALUES('Sindh',3)
+INSERT INTO tblState(StateName,CountryID) VALUES('Lahore',3)
+INSERT INTO tblState(StateName,CountryID) VALUES('Karanchi',3)

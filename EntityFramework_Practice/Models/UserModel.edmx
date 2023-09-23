@@ -4,7 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="dbDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="dbDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblCountry">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CountryName" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="tblState">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StateName" Type="varchar" MaxLength="30" />
+          <Property Name="CountryID" Type="int" />
+        </EntityType>
         <EntityType Name="tblUser">
           <Key>
             <PropertyRef Name="User_ID" />
@@ -13,7 +28,21 @@
           <Property Name="Name" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Email" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Age" Type="int" Nullable="false" />
+          <Property Name="Country" Type="int" Nullable="false" />
+          <Property Name="State" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK__tblState__Countr__04E4BC85">
+          <End Role="tblCountry" Type="Self.tblCountry" Multiplicity="0..1" />
+          <End Role="tblState" Type="Self.tblState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCountry">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="tblState">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="DeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="user_id" Type="int" Mode="In" />
         </Function>
@@ -33,10 +62,15 @@
           <Parameter Name="age" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="dbDatabaseModelStoreContainer">
+          <EntitySet Name="tblCountry" EntityType="Self.tblCountry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblState" EntityType="Self.tblState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tblState__Countr__04E4BC85" Association="Self.FK__tblState__Countr__04E4BC85">
+            <End Role="tblCountry" EntitySet="tblCountry" />
+            <End Role="tblState" EntitySet="tblState" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="dbDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -48,15 +82,17 @@
           <Property Name="Name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Age" Type="Int32" Nullable="false" />
+          <Property Name="Country" Type="Int32" Nullable="false" />
+          <Property Name="State" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityContainer Name="dbDatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
           <FunctionImport Name="DeleteUser">
-            <Parameter Name="user_id" Mode="In" Type="Int32" />
+          <Parameter Name="user_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GetAllUser" ReturnType="Collection(dbDatabaseModel.GetAllUser_Result)" />
           <FunctionImport Name="GetOneUser" ReturnType="Collection(dbDatabaseModel.GetOneUser_Result)">
-            <Parameter Name="user_id" Mode="In" Type="Int32" />
+          <Parameter Name="user_id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="InsertUser">
             <Parameter Name="name" Mode="In" Type="String" />
@@ -69,6 +105,12 @@
             <Parameter Name="email" Mode="In" Type="String" />
             <Parameter Name="age" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="tblCountries" EntityType="dbDatabaseModel.tblCountry" />
+          <EntitySet Name="tblStates" EntityType="dbDatabaseModel.tblState" />
+          <AssociationSet Name="FK__tblState__Countr__04E4BC85" Association="dbDatabaseModel.FK__tblState__Countr__04E4BC85">
+            <End Role="tblCountry" EntitySet="tblCountries" />
+            <End Role="tblState" EntitySet="tblStates" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="GetAllUser_Result">
           <Property Type="Int32" Name="User_ID" Nullable="false" />
@@ -82,6 +124,35 @@
           <Property Type="String" Name="Email" Nullable="false" MaxLength="30" />
           <Property Type="Int32" Name="Age" Nullable="false" />
         </ComplexType>
+        <EntityType Name="tblCountry">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CountryName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tblStates" Relationship="dbDatabaseModel.FK__tblState__Countr__04E4BC85" FromRole="tblCountry" ToRole="tblState" />
+        </EntityType>
+        <EntityType Name="tblState">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StateName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CountryID" Type="Int32" />
+          <NavigationProperty Name="tblCountry" Relationship="dbDatabaseModel.FK__tblState__Countr__04E4BC85" FromRole="tblState" ToRole="tblCountry" />
+        </EntityType>
+        <Association Name="FK__tblState__Countr__04E4BC85">
+          <End Type="dbDatabaseModel.tblCountry" Role="tblCountry" Multiplicity="0..1" />
+          <End Type="dbDatabaseModel.tblState" Role="tblState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCountry">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="tblState">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -91,6 +162,8 @@
           <EntitySetMapping Name="tblUsers">
             <EntityTypeMapping TypeName="dbDatabaseModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="User_ID" ColumnName="User_ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -121,6 +194,23 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="dbDatabaseModel.Store.InsertUser" />
           <FunctionImportMapping FunctionImportName="UpdateUser" FunctionName="dbDatabaseModel.Store.UpdateUser" />
+          <EntitySetMapping Name="tblCountries">
+            <EntityTypeMapping TypeName="dbDatabaseModel.tblCountry">
+              <MappingFragment StoreEntitySet="tblCountry">
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblStates">
+            <EntityTypeMapping TypeName="dbDatabaseModel.tblState">
+              <MappingFragment StoreEntitySet="tblState">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

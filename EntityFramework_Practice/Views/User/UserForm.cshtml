@@ -20,6 +20,25 @@
         <td>Age: </td>
         <td><input type="text" id="Age_txt" /></td>
     </tr>
+
+    <tr>
+        <td>Country: </td>
+        <td>
+            <select id="Country_ddl" onchange="State()">
+                <option value="0">Choose Country</option>
+            </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>State: </td>
+        <td>
+            <select id="State_ddl">
+                <option value="0">Choose State</option>
+            </select>
+        </td>
+    </tr>
+
     <tr>
         <td></td>
         <td><input type="button" id="Save_btn" value="Save" onclick="INSERT()" /></td>
@@ -31,24 +50,26 @@
         <th>Name</th>
         <th>Email</th>
         <th>Age</th>
+        <th>Country</th>
+        <th>State</th>
         <th id="Action_col">Actions</th>
     </tr>
 </table>
 
 <style>
-    #Display_tbl{
+    #Display_tbl {
         border: 1px solid black;
         width: 100%;
     }
 
-    #Display_tbl tr th {
-        border: 1px solid black;
-        background-color: brown;
-        color: white;
-        text-align: center;
-    }
+        #Display_tbl tr th {
+            border: 1px solid black;
+            background-color: brown;
+            color: white;
+            text-align: center;
+        }
 
-    #Action_col{
+    #Action_col {
         width: 200px;
     }
 
@@ -57,25 +78,78 @@
         text-align: center
     }
 
-    #Display_tbl tr td input {
-        width: 50%;
-    }
+        #Display_tbl tr td input {
+            width: 50%;
+        }
 </style>
 
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         DISPLAY();
+        Country();
+        $("#State_ddl").prop('disabled', true); // Disable State dropdown on page load
     });
 
     let uid;
 
+    @*  
+        In country function if do not put '/' in front of url then Ajax Routing Calling Controller Name Twice sometime. or I can use '@url.Action("User","GetCountry")' to get rid off this problem
+    *@
+
+    function Country() {
+        $.ajax({
+            url: '/User/GetCountry',
+            type: 'Post',
+            data: {},
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    $("#Country_ddl").append($('<option></option>').html(dt[i].CountryName).val(dt[i].CountryID));
+                }
+
+                /* Using each loop
+                    $.each(dt, function () {
+                        $("#Country_ddl").append($('<option></option>').html(this.CountryName).val(this.CountryID));
+                    });
+                */
+            },
+            error: function () {
+                alert("Country data not found!");
+            }
+        });
+    }
+
+    function State() {
+        if ($("#Country_ddl").val() == 0) {
+            $("#State_ddl").prop('disabled', true).empty().append($('<option></option>').val('0').text('Choose State'));
+        }
+        else {
+            $.ajax({
+                url: '/User/GetState',
+                type: 'Post',
+                data: { CountryID: $("#Country_ddl").val() },
+                success: function (dt) {
+                    //debugger;
+                    $("#State_ddl").prop('disabled', false).empty().append($('<option></option>').val('0').text('Choose State'));
+                    $.each(dt, function () {
+                        $("#State_ddl").append($('<option></option>').html(this.Text).val(this.Value));
+                    });
+                },
+                error: function () {
+                    alert("State data not found!");
+                }
+            });
+        }
+    }
+
     function ClearForm() {
         uid = 0;
-        $("#Name_txt").val(""),
-        $("#Email_txt").val(""),
-        $("#Age_txt").val(""),
-        $("#Save_btn").val("Save")
+        $("#Name_txt").val("");
+        $("#Email_txt").val("");
+        $("#Age_txt").val("");
+        $("#Country_ddl").val(0);
+        $("#State_ddl").prop('disabled', true).empty().append($('<option></option>').val('0').text('Choose State'));
+        $("#Save_btn").val("Save");
     }
 
     function INSERT() {
@@ -86,7 +160,9 @@
                 User_ID: uid,
                 Name: $("#Name_txt").val(),
                 Email: $("#Email_txt").val(),
-                Age: $("#Age_txt").val()
+                Age: $("#Age_txt").val(),
+                Country: $("#Country_ddl").val(),
+                State: $("#State_ddl").val()
             },
             success: function () {
                 alert('Data has been saved successfully!');
@@ -104,6 +180,7 @@
             url: 'User/GetAllUser',
             type: 'post',
             data: {},
+            async: false,
             success: function (data) {
                 $("#Display_tbl").find("tr:gt(0)").remove();
                 for (var i = 0; i < data.length; i++) {
@@ -112,7 +189,9 @@
                             <td>${data[i].Name}</td>
                             <td>${data[i].Email}</td>
                             <td>${data[i].Age}</td>
-                            <td><a href="javascript:PopulateUser('${ data[i].User_ID}')">Edit</a> | <a href="javascript:DeleteUser('${data[i].User_ID }')">Delete</a></td>
+                            <td>${data[i].Country}</td>
+                            <td>${data[i].State}</td>
+                            <td><a href="javascript:PopulateUser('${data[i].User_ID}')">Edit</a> | <a href="javascript:DeleteUser('${data[i].User_ID}')">Delete</a></td>
                         </tr>
                     `);
                 }
@@ -128,10 +207,17 @@
             url: 'User/GetOneUser',
             type: 'post',
             data: { User_ID: userid },
+            async: false,  // Make the AJAX request synchronous
             success: function (data) {
                 $("#Name_txt").val(data[0].Name);
                 $("#Email_txt").val(data[0].Email);
                 $("#Age_txt").val(data[0].Age);
+                $("#Country_ddl").val(data[0].Country);
+
+                // Call State synchronously to populate the state dropdown
+                State();
+
+                $("#State_ddl").val(data[0].State);
                 $("#Save_btn").val("Update");
                 uid = data[0].User_ID;
             },

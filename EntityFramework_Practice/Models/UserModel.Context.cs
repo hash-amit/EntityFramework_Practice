@@ -28,6 +28,8 @@ namespace EntityFramework_Practice.Models
         }
     
         public virtual DbSet<tblUser> tblUsers { get; set; }
+        public virtual DbSet<tblCountry> tblCountries { get; set; }
+        public virtual DbSet<tblState> tblStates { get; set; }
     
         public virtual int DeleteUser(Nullable<int> user_id)
         {

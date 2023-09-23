@@ -12,13 +12,12 @@ namespace EntityFramework_Practice.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class tblUser
+    public partial class tblState
     {
-        public int User_ID { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public int Age { get; set; }
-        public int Country { get; set; }
-        public int State { get; set; }
+        public int StateID { get; set; }
+        public string StateName { get; set; }
+        public Nullable<int> CountryID { get; set; }
+    
+        public virtual tblCountry tblCountry { get; set; }
     }
 }
