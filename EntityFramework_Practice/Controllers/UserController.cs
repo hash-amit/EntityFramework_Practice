@@ -97,7 +97,7 @@ namespace EntityFramework_Practice.Controllers
 
                         });
 
-            // var data = dbEntities.tblStates.Where(M => M.CountryID == state.CountryID).ToList(); // this line is giving error
+            // var data = dbEntities.tblStates.Where(M => M.CountryID == state.CountryID).Select(M => new { M.StateID, M.StateName }).ToList(); // this line is giving error
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

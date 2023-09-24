@@ -128,6 +128,7 @@
                 url: '/User/GetState',
                 type: 'Post',
                 data: { CountryID: $("#Country_ddl").val() },
+                async: false,
                 success: function (dt) {
                     //debugger;
                     $("#State_ddl").prop('disabled', false).empty().append($('<option></option>').val('0').text('Choose State'));
