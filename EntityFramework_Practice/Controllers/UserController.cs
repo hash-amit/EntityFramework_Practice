@@ -80,7 +80,7 @@ namespace EntityFramework_Practice.Controllers
 
         public JsonResult GetCountry()
         {
-            /* Using DbContext class to fetch all the data from tblCountries table */
+            /* Using DbContext class and lamda function to fetch all the data from tblCountries table */
             var data = dbEntities.tblCountries.Select(c => new { c.CountryName, c.CountryID }).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -97,7 +97,8 @@ namespace EntityFramework_Practice.Controllers
 
                         });
 
-            // var data = dbEntities.tblStates.Where(M => M.CountryID == state.CountryID).Select(M => new { M.StateID, M.StateName }).ToList(); // this line is giving error
+            // Using Lambda function to fetch the state list
+            // var data = dbEntities.tblStates.Where(M => M.CountryID == state.CountryID).Select(M => new { M.StateID, M.StateName }).ToList(); 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

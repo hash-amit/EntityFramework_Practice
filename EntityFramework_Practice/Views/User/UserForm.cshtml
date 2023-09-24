@@ -130,11 +130,22 @@
                 data: { CountryID: $("#Country_ddl").val() },
                 async: false,
                 success: function (dt) {
-                    //debugger;
+                    debugger;
                     $("#State_ddl").prop('disabled', false).empty().append($('<option></option>').val('0').text('Choose State'));
+
+                    /*
+                        Uncomment the given below 'each' loop if GetState method is using LINQ to fetch the state list
+                    */
                     $.each(dt, function () {
                         $("#State_ddl").append($('<option></option>').html(this.Text).val(this.Value));
                     });
+
+                    /*
+                        Uncomment the given below 'each' loop if GetState method is using lambda function to fetch the state list
+                    */
+                    //$.each(dt, function () {
+                    //    $("#State_ddl").append($('<option></option>').html(this.StateName).val(this.StateID));
+                    //});
                 },
                 error: function () {
                     alert("State data not found!");
@@ -208,14 +219,16 @@
             url: 'User/GetOneUser',
             type: 'post',
             data: { User_ID: userid },
-            async: false,  // Make the AJAX request synchronous
+            async: false,  // Make the AJAX request synchronous 
             success: function (data) {
                 $("#Name_txt").val(data[0].Name);
                 $("#Email_txt").val(data[0].Email);
                 $("#Age_txt").val(data[0].Age);
                 $("#Country_ddl").val(data[0].Country);
 
-                // Call State synchronously to populate the state dropdown
+                /*
+                    make sure the ajax request is synchronous in the state() as well otherwise state will not gonna populate
+                */
                 State();
 
                 $("#State_ddl").val(data[0].State);
