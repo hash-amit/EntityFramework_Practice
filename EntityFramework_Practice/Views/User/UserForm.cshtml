@@ -199,8 +199,9 @@
             data: {},
             async: false,
             success: function (data) {
-                $("#Display_tbl").find("tr:gt(0)").remove();
                 debugger;
+                $("#Display_tbl").find("tr:gt(0)").remove();
+                //debugger;
                 for (var i = 0; i < data.length; i++) {
                     $("#Display_tbl").append(`
                         <tr>
@@ -221,6 +222,7 @@
     }
 
     function PopulateUser(userid) {
+        //debugger;
         $.ajax({
             url: 'User/GetOneUser',
             type: 'post',

@@ -51,6 +51,7 @@ namespace EntityFramework_Practice.Controllers
                         join stat in dbEntities.tblStates on usr.State equals stat.StateID
                         select new
                         {
+                            usr.User_ID,
                             usr.Name,
                             usr.Email,
                             usr.Age,
