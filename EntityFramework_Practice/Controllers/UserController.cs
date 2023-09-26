@@ -46,7 +46,17 @@ namespace EntityFramework_Practice.Controllers
         public JsonResult GetAllUser()
         {
             // Using LINQ to fetch all data
-            var data = (from usr in dbEntities.tblUsers select usr);
+            var data = (from usr in dbEntities.tblUsers
+                        join cntry in dbEntities.tblCountries on usr.Country equals cntry.CountryID
+                        join stat in dbEntities.tblStates on usr.State equals stat.StateID
+                        select new
+                        {
+                            usr.Name,
+                            usr.Email,
+                            usr.Age,
+                            cntry.CountryName,
+                            stat.StateName
+                        }).ToList();
 
             // Retrieving all data from the table using DbSet
             //var data = dbEntities.tblUsers.ToList();

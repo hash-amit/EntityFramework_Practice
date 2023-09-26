@@ -200,14 +200,15 @@
             async: false,
             success: function (data) {
                 $("#Display_tbl").find("tr:gt(0)").remove();
+                debugger;
                 for (var i = 0; i < data.length; i++) {
                     $("#Display_tbl").append(`
                         <tr>
                             <td>${data[i].Name}</td>
                             <td>${data[i].Email}</td>
                             <td>${data[i].Age}</td>
-                            <td>${data[i].Country}</td>
-                            <td>${data[i].State}</td>
+                            <td>${data[i].CountryName}</td>
+                            <td>${data[i].StateName}</td>
                             <td><a href="javascript:PopulateUser('${data[i].User_ID}')">Edit</a> | <a href="javascript:DeleteUser('${data[i].User_ID}')">Delete</a></td>
                         </tr>
                     `);
