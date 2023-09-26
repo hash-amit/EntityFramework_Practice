@@ -103,9 +103,14 @@
             type: 'Post',
             data: {},
             success: function (dt) {
-                for (var i = 0; i < dt.length; i++) {
-                    $("#Country_ddl").append($('<option></option>').html(dt[i].CountryName).val(dt[i].CountryID));
-                }
+                // Uncomment  when you use LINQ on controller
+                $.each(dt, function () {
+                    $("#Country_ddl").append($('<option></option>').html(this.Text).val(this.Value));
+                });
+
+                //for (var i = 0; i < dt.length; i++) {
+                //    $("#Country_ddl").append($('<option></option>').html(dt[i].CountryName).val(dt[i].CountryID));
+                //}
 
                 /* Using each loop
                     $.each(dt, function () {

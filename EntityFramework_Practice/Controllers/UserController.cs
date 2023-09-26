@@ -14,7 +14,6 @@ namespace EntityFramework_Practice.Controllers
     {
         dbDatabaseEntities dbEntities = new dbDatabaseEntities();
 
-
         // GET: User
         public ActionResult UserForm()
         {
@@ -46,8 +45,11 @@ namespace EntityFramework_Practice.Controllers
 
         public JsonResult GetAllUser()
         {
+            // Using LINQ to fetch all data
+            var data = (from usr in dbEntities.tblUsers select usr);
+
             // Retrieving all data from the table using DbSet
-            var data = dbEntities.tblUsers.ToList();
+            //var data = dbEntities.tblUsers.ToList();
 
             // Retrieve all data from the table using a custom method
             //var data = dbEntities.GetAllUser().ToList();
@@ -57,8 +59,13 @@ namespace EntityFramework_Practice.Controllers
 
         public JsonResult GetOneUser(tblUser user)
         {
+            // Using LINQ to retreving one record from the table
+            var data = (from usr in dbEntities.tblUsers
+                        where usr.User_ID == user.User_ID 
+                        select usr).ToList();
+            
             // Retereving one record using DbSet and through lambda function telling which record it has to retereve
-            var data = dbEntities.tblUsers.Where(M => M.User_ID == user.User_ID).ToList();
+            // var data = dbEntities.tblUsers.Where(M => M.User_ID == user.User_ID).ToList();
 
             // Using custom method to retreve only one record
             // var data = dbEntities.GetOneUser(user.User_ID).ToList();
@@ -80,8 +87,16 @@ namespace EntityFramework_Practice.Controllers
 
         public JsonResult GetCountry()
         {
+            // Using LINQ to fetch the list of country
+            var data = (from country in dbEntities.tblCountries
+                        select new SelectListItem
+                        {
+                            Text = country.CountryName,
+                            Value = country.CountryID.ToString()
+                        }).ToList();
+            
             /* Using DbContext class and lamda function to fetch all the data from tblCountries table */
-            var data = dbEntities.tblCountries.Select(c => new { c.CountryName, c.CountryID }).ToList();
+            //var data = dbEntities.tblCountries.Select(c => new { c.CountryName, c.CountryID }).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
